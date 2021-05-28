@@ -1,0 +1,12 @@
+<div class="card text-center">
+  <%= image_tag @user.avatar, height: '100px', width: '100px' if @user.avatar.present? %>
+  <div class="card-header">
+    Name: <%= @user.name %>
+  </div>
+
+  <div class="card-body">
+    <h5 class="card-title">Email: <%= @user.email %></h5>
+    <p class="card-text">Address: <%= @user.full_address %></p>
+  </div>
+  <%= link_to "Users", users_path %>
+</div>
