@@ -10,17 +10,28 @@
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
   
-    <p class="notice"><%= notice %></
-    <p class="alert"><%= alert %></p>  
-  
   <body>
-    <div class="text-right mt-3">
-      <% if user_signed_in? %>
-        <%= link_to "Sign out", destroy_user_session_path, method: :delete, class: 'btn btn-danger' if user_signed_in? %>
-        <%= 'Hi '+current_user.email %>
+    <div class="container mt-3">
+      <% if alert %>
+        <div class="alert alert-danger" role="alert">
+          <%= alert %>
+        </div>
+      <% elsif notice %>  
+        <div class="alert alert-success" role="alert">
+          <%= notice %>
+        </div>
       <% end %>
-    </div>
+  
+      <div class="text-right mt-3 container" style="display: flex; justify-content: flex-end; align-items: center;">
+        <% if user_signed_in? %>
+          <span style="margin-right: 10px;">
+            <%= 'Hi '+current_user.email %>
+          </span>
+          <%= link_to "Sign out", destroy_user_session_path, {method: :delete, class: 'btn btn-secondary', style: 'color: white;' } if user_signed_in? %>
+        <% end %> 
+      </div>
 
-    <%= yield %>
+      <%= yield %>
+    </div>
   </body>
 </html>

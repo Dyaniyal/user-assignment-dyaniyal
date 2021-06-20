@@ -1,12 +1,18 @@
-<div class="card text-center">
-  <%= image_tag @user.avatar, height: '100px', width: '100px' if @user.avatar.present? %>
+<div class="mt-3card text-center">
   <div class="card-header">
     Name: <%= @user.name %>
   </div>
 
   <div class="card-body">
+    <% if @user.avatar.attached? %>            
+      <%= image_tag @user.avatar, height: '200px', width: '200px' %>
+    <% end %>
+    
     <h5 class="card-title">Email: <%= @user.email %></h5>
     <p class="card-text">Address: <%= @user.full_address %></p>
+    <% if @user.phone_number.present? %>
+      <p class="card-text">Phone no: <%= @user.phone_number %></p>
+    <% end %>
   </div>
-  <%= link_to "Users", users_path %>
+  <%= link_to current_user.admin? ? 'Back' : "Edit", after_sign_in_path(current_user) %>
 </div>

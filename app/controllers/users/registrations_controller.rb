@@ -3,6 +3,7 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   # before_action :configure_sign_up_params, only: [:create]
   # before_action :configure_account_update_params, only: [:update]
+  before_action :find_user, only: [:edit, :update]
 
   # GET /resource/sign_up
   def new
@@ -12,28 +13,40 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   # POST /resource
   def create
-    user  = User.new(user_params)
-    if user.save
+    @user = User.new(user_params)
+    if @user.save
       flash[:notice] = "User created successfully"
-      redirect_to user_path(user)
+      redirect_to user_path(@user)
     else
-      flash[:error] = user.errors.full_messages.join(',')
+      flash[:error] = @user.errors.full_messages.join(',')
+      render 'new'
     end
-  end
-
-  def user_params
-    params.require(:user).permit(:name, :email, :phone_number, :password, :password_confirmation, :avatar, address_attributes: [:id, :address_line, :state, :city, :street, :land_mark, :pincode])
   end
 
   # GET /resource/edit
   # def edit
-  #   super
   # end
 
   # PUT /resource
-  # def update
-  #   super
-  # end
+  def update
+    if @user.update_without_password(user_params)
+      flash[:notice] = "User updated successfully"
+      redirect_to current_user.admin? ? root_path : edit_user_registration_path(id: @user.id)
+    else
+      flash[:error] = @user.errors.full_messages.join(',')
+      render 'edit'
+    end
+  end
+
+  private
+
+  def find_user
+    @user = User.find_by(id: params[:id] || params[:user][:id])
+  end
+
+  def user_params
+    params.require(:user).permit(:name, :email, :phone_number, :avatar, address_attributes: [:id, :address_line, :state, :city, :street, :land_mark, :pincode])
+  end
 
   # DELETE /resource
   # def destroy

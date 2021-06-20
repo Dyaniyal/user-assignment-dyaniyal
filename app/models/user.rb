@@ -3,13 +3,16 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
-  
+
+  validates :name, presence: true
+  validates :phone_number, numericality: { only_integer: true }, length: { is: 10 }
+
   has_one :address, dependent: :destroy
   has_one_attached :avatar
-  
-  accepts_nested_attributes_for :address, allow_destroy: true
 
   delegate :street, :land_mark, :state, :pincode, :address_line, to: :address
+
+  accepts_nested_attributes_for :address, allow_destroy: true
 
   def full_address
     if address.present?
